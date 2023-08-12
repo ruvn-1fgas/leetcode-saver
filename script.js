@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Leetcode solution's saver
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.0.1
 // @description  Script saves the file to a folder with corresponding difficulty, name and file extension
 // @author       https://github.com/ruvn-1fgas
 // @match        https://leetcode.com/*
