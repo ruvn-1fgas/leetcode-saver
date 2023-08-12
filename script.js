@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Leetcode solution's saver
 // @namespace    http://tampermonkey.net/
-// @version      1.0.3
+// @version      1.0.4
 // @description  Script saves the file to a folder with corresponding difficulty, name and file extension
 // @author       https://github.com/ruvn-1fgas
 // @match        https://leetcode.com/*
@@ -153,18 +153,47 @@ async function saveCode(taskInfo, taskCode) {
 async function save(taskInfo, taskCode, taskDesc) {
     const { taskName, level, fileExt } = taskInfo;
     const codeFilename = `Leetcode/${level}/${taskName}${fileExt}`;
-    const codeBl = new Blob([taskCode], { type: `text/${fileExt}` });
-    const codeDownload = {
-        url: URL.createObjectURL(codeBl),
-        name: codeFilename
-    };
-    GM_download(codeDownload);
+    // check if file exists
+    let solvedTasks = localStorage.getItem('solved_tasks');
+    solvedTasks = solvedTasks === null ? [] : solvedTasks.split(',');
+    let isExists = solvedTasks === null ? false : solvedTasks.includes(`${taskName}${fileExt}`);
 
-    const descFilename = `Leetcode/${level}/${taskName}.md`;
-    const descBl = new Blob([taskDesc], { type: 'text/md' });
-    const descDownload = {
-        url: URL.createObjectURL(descBl),
-        name: descFilename
-    };
-    GM_download(descDownload);
+    if (!isExists) {
+        const codeBl = new Blob([taskCode], { type: `text/${fileExt}` });
+        const codeDownload = {
+            url: URL.createObjectURL(codeBl),
+            name: codeFilename
+        };
+        GM_download(codeDownload);
+
+        if (solvedTasks === null) {
+            solvedTasks = [];
+        }
+
+        solvedTasks.push(`${taskName}${fileExt}`);
+
+        localStorage.setItem('solved_tasks', solvedTasks);
+    }
+
+    let solvedTasksDescs = localStorage.getItem('solved_tasks_descs');
+    solvedTasksDescs = solvedTasksDescs === null ? [] : solvedTasksDescs.split(',');
+    isExists = solvedTasksDescs === null ? false : solvedTasksDescs.includes(taskName);
+
+    if (!isExists) {
+        const descFilename = `Leetcode/${level}/${taskName}.md`;
+        const descBl = new Blob([taskDesc], { type: 'text/md' });
+        const descDownload = {
+            url: URL.createObjectURL(descBl),
+            name: descFilename
+        };
+        GM_download(descDownload);
+
+        if (solvedTasksDescs === null) {
+            solvedTasksDescs = [];
+        }
+
+        solvedTasksDescs.push(taskName);
+
+        localStorage.setItem('solved_tasks_descs', solvedTasksDescs);
+    }
 }
