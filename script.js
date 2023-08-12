@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Leetcode solution's saver
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.0.2
 // @description  Script saves the file to a folder with corresponding difficulty, name and file extension
 // @author       https://github.com/ruvn-1fgas
 // @match        https://leetcode.com/*
@@ -22,7 +22,7 @@ let turndownService = new TurndownService();
 turndownService.addRule('pre', {
     filter: ['pre'],
     replacement: function (content) {
-        return '```\n' + content + '\n```'
+        return '```\n' + content + '```'
     }
 });
 
